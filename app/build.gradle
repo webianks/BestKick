@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.webianks.test.bestkick"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -33,4 +33,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
+    compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
 }

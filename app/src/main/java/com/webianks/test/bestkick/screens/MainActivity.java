@@ -1,27 +1,40 @@
-package com.webianks.test.bestkick;
+package com.webianks.test.bestkick.screens;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.webianks.test.bestkick.KickStarterAdapter;
+import com.webianks.test.bestkick.R;
+import com.webianks.test.bestkick.VolleySingleton;
 import com.webianks.test.bestkick.database.KickContract;
 
 import org.json.JSONArray;
@@ -30,7 +43,10 @@ import org.json.JSONObject;
 
 import java.util.Vector;
 
-public class MainActivity extends AppCompatActivity implements KickStarterAdapter.ItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+
+public class MainActivity extends AppCompatActivity implements
+        KickStarterAdapter.ItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int BEST_KICK_PROJECTS_LOADER = 200;
     private RecyclerView recyclerView;
@@ -39,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private LinearLayoutManager linearLayoutManager;
+    private SmoothProgressBar smoothProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
         Bundle args = new Bundle();
         args.putInt("start", 0);
         args.putInt("end", 19);
+        args.putBoolean("filter",false);
 
         getSupportLoaderManager().initLoader(BEST_KICK_PROJECTS_LOADER, args, this);
     }
@@ -119,7 +137,14 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
                 kickValues.put(KickContract.KickEntry.KICK_END_TIME, endTime);
                 kickValues.put(KickContract.KickEntry.KICK_LOCATION, location);
                 kickValues.put(KickContract.KickEntry.KICK_PERCENTAGE_FUNDED, percentageFunded);
-                kickValues.put(KickContract.KickEntry.KICK_BACKERS, backers);
+
+                //malformed json response
+                //please check serial_number 54
+                if (backers.equals("Cambridge, MA") || backers.equals("New York, NY"))
+                    backers = "546348";
+
+                kickValues.put(KickContract.KickEntry.KICK_BACKERS, Integer.valueOf(backers));
+
                 kickValues.put(KickContract.KickEntry.KICK_STATE, state);
                 kickValues.put(KickContract.KickEntry.KICK_TITLE, title);
                 kickValues.put(KickContract.KickEntry.KICK_TYPE, type);
@@ -166,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
             getSupportActionBar().setTitle(null);
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        smoothProgressBar = (SmoothProgressBar) findViewById(R.id.smoothProgress);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -182,14 +208,25 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             loading = false;
                             Log.v("...", "Last Item Wow !" + totalItemCount);
+                            smoothProgressBar.setVisibility(View.VISIBLE);
 
-                            //restart loader to fetch more values
-                            //for first 20 items
-                            Bundle args = new Bundle();
-                            args.putInt("start", 0);
-                            args.putInt("end", totalItemCount + 19);
-                            getSupportLoaderManager().restartLoader(BEST_KICK_PROJECTS_LOADER, args, MainActivity.this);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            //restart loader to fetch more values
+                                            //for first 20 items
+                                            Bundle args = new Bundle();
+                                            args.putInt("start", 0);
+                                            args.putInt("end", totalItemCount + 19);
+                                            getSupportLoaderManager().restartLoader(BEST_KICK_PROJECTS_LOADER, args, MainActivity.this);
 
+                                        }
+                                    }, 2000);
+                                }
+                            });
                         }
                     }
                 }
@@ -221,13 +258,28 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
         int start = args.getInt("start");
         int end = args.getInt("end");
 
+        boolean filter  = args.getBoolean("filter");
+
         loading = true;
 
         Uri projects_uri = KickContract.KickEntry.CONTENT_URI;
-        String selection = KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " >= ? AND " +
-                KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ?";
+        String selection;
+        String[] selectionArgs;
 
-        String[] selectionArgs = new String[]{String.valueOf(start), String.valueOf(end)};
+        if (filter){
+
+            String backers = String.valueOf(args.getInt("filter_by"));
+            Toast.makeText(this,"Filtering by "+backers,Toast.LENGTH_SHORT).show();
+
+            selection = KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " >= ? AND " +
+                    KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ? AND "+
+                    KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_BACKERS + " <= ? ";
+            selectionArgs = new String[]{String.valueOf(start), String.valueOf(end), backers};
+        }else{
+            selection = KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " >= ? AND " +
+                    KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ?";
+            selectionArgs = new String[]{String.valueOf(start), String.valueOf(end)};
+        }
 
         return new CursorLoader(this,
                 projects_uri,
@@ -238,7 +290,72 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.ic_filter:
+                filter();
+                break;
+
+            case R.id.ic_sort:
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void filter() {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+        alertDialog.setTitle("Filter Projects");
+        alertDialog.setMessage("Filter by No. of Backers");
+
+        final EditText input = new EditText(MainActivity.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(50,00,50,00);
+        input.setLayoutParams(lp);
+        input.setGravity(Gravity.CENTER);
+        input.setHint(getString(R.string.enter_backers));
+        input.setFocusable(true);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        alertDialog.setView(input);
+
+        alertDialog.setPositiveButton("Filter",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String backers = input.getText().toString();
+
+                        if (!backers.equals("")) {
+                            Bundle args = new Bundle();
+                            args.putInt("start", 0);
+                            args.putInt("end", kickStarterAdapter.getItemCount()-1);
+                            args.putBoolean("filter",true);
+                            args.putInt("filter_by",Integer.valueOf(backers));
+                            getSupportLoaderManager().restartLoader(BEST_KICK_PROJECTS_LOADER, args, MainActivity.this);
+
+                        }
+                    }
+                });
+
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
+
+    }
+
+    @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        smoothProgressBar.setVisibility(View.GONE);
 
         if (cursor != null && cursor.getCount() > 0) {
             kickStarterAdapter.swapCursor(cursor);

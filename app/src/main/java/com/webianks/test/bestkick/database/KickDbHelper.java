@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class KickDbHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "kick.db";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
 
     public KickDbHelper(Context context) {
@@ -29,7 +29,7 @@ public class KickDbHelper extends SQLiteOpenHelper {
                 + KickContract.KickEntry.KICK_TITLE + " VARCHAR (255) ,"
                 + KickContract.KickEntry.KICK_LOCATION + " VARCHAR (255) ,"
                 + KickContract.KickEntry.KICK_PERCENTAGE_FUNDED + " INTEGER ,"
-                + KickContract.KickEntry.KICK_BACKERS + " VARCHAR(255) ,"
+                + KickContract.KickEntry.KICK_BACKERS + " INTEGER ,"
                 + KickContract.KickEntry.KICK_STATE + " VARCHAR(255) ,"
                 + KickContract.KickEntry.KICK_URL + " VARCHAR(255) ,"
                 + KickContract.KickEntry.KICK_TYPE + " VARCHAR (255));";

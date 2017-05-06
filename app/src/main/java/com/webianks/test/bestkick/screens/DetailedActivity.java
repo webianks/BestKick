@@ -1,4 +1,4 @@
-package com.webianks.test.bestkick;
+package com.webianks.test.bestkick.screens;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.webianks.test.bestkick.R;
 import com.webianks.test.bestkick.database.KickContract;
 
 /**

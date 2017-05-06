@@ -57,7 +57,7 @@ public class KickStarterAdapter extends RecyclerView.Adapter<KickStarterAdapter.
     }
 
 
-    void setItemClickListener(ItemClickListener itemClickListener){
+    public void setItemClickListener(ItemClickListener itemClickListener){
         this.itemClickListener = itemClickListener;
     }
 
@@ -67,7 +67,7 @@ public class KickStarterAdapter extends RecyclerView.Adapter<KickStarterAdapter.
     }
 
 
-    Cursor swapCursor(Cursor cursor) {
+    public Cursor swapCursor(Cursor cursor) {
         if (dataCursor == cursor) {
             return null;
         }
@@ -110,7 +110,7 @@ public class KickStarterAdapter extends RecyclerView.Adapter<KickStarterAdapter.
         }
     }
 
-    interface ItemClickListener{
+    public interface ItemClickListener{
         void itemClicked(Cursor dataCursor);
     }
 

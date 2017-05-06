@@ -3,7 +3,7 @@ package com.webianks.test.bestkick;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
-class VolleySingleton {
+public class VolleySingleton {
 
     static VolleySingleton instance = null;
     private RequestQueue requestQueue;
@@ -14,7 +14,7 @@ class VolleySingleton {
     }
 
 
-    static VolleySingleton getInstance() {
+    public static VolleySingleton getInstance() {
 
         if (instance == null)
             instance = new VolleySingleton();
@@ -23,7 +23,7 @@ class VolleySingleton {
     }
 
 
-    RequestQueue getRequestQueue() {
+    public RequestQueue getRequestQueue() {
         return requestQueue;
     }
 }
