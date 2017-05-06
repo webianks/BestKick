@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Best Kick</string>
+    <string name="project_name">Cool Project Name</string>
+    <string name="pleadge">Pleadge - $80000</string>
+    <string name="backers">Baackers - 1500</string>
+    <string name="noOfDaysToGo">No. Of Days To Go - 21</string>
 </resources>
