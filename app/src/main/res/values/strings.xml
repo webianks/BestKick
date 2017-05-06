@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Best Kick</string>
-    <string name="project_name">Cool Project Name</string>
+    <string name="project_name">Catalysts, Explorers &amp; Secret Keepers: Women of SF</string>
     <string name="pleadge">Pleadge - $80000</string>
-    <string name="backers">Baackers - 1500</string>
+    <string name="backers">Backers - 1500</string>
     <string name="noOfDaysToGo">No. Of Days To Go - 21</string>
     <string name="details">Details</string>
+    <string name="by">By- Museum of Science Fiction</string>
+    <string name="blurb"><![CDATA[\'Catalysts, Explorers & Secret Keepers: Women of Science Fiction\' is a take-home exhibit & anthology by the Museum of Science Fiction.]]></string>
 </resources>

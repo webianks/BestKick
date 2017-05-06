@@ -130,7 +130,9 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(null);
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(null);
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
 
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
     @Override
     public void itemClicked() {
 
-        Intent intent = new Intent(this,DetailedActivity.class);
+        Intent intent = new Intent(this, DetailedActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
