@@ -2,6 +2,11 @@ package com.webianks.test.bestkick;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,11 +31,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class MainActivity extends AppCompatActivity implements KickStarterAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity implements KickStarterAdapter.ItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
 
+    private static final int BEST_KICK_PROJECTS_LOADER = 200;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private KickStarterAdapter kickStarterAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +45,13 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
         setContentView(R.layout.activity_main);
 
         initView();
-        getSetProjects();
+        getProjects();
+        showResponse(null);
+
+        getSupportLoaderManager().initLoader(BEST_KICK_PROJECTS_LOADER, null, this);
     }
 
-    private void getSetProjects() {
+    private void getProjects() {
 
         VolleySingleton volleySingleton = VolleySingleton.getInstance();
         RequestQueue requestQueue = volleySingleton.getRequestQueue();
@@ -66,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
 
     private void processResponse(JSONArray response) {
 
-        List<KickProject> projectList = new ArrayList<>();
+        //List<KickProject> projectList = new ArrayList<>();
         Vector<ContentValues> cVVector = new Vector<ContentValues>(response.length());
 
         for (int i = 0; i < response.length(); i++) {
@@ -91,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
                 int percentageFunded = jsonProject.getInt("percentage.funded");
                 int serialNumber = jsonProject.getInt("s.no");
 
-                KickProject kickProject = new KickProject();
+               /* KickProject kickProject = new KickProject();
 
                 kickProject.setTitle(title);
                 kickProject.setBackers(backers);
@@ -109,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
                 kickProject.setPercentageFunded(percentageFunded);
                 kickProject.setSerialNumber(serialNumber);
 
-                projectList.add(kickProject);
+                projectList.add(kickProject);*/
 
                 ContentValues kickValues = new ContentValues();
 
@@ -146,11 +156,12 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
             getContentResolver().bulkInsert(KickContract.KickEntry.CONTENT_URI, cvArray);
         }
 
-        showResponse(projectList);
+        //showResponse(projectList);
+
     }
 
-    private void showResponse(List<KickProject> projectList) {
-        KickStarterAdapter kickStarterAdapter = new KickStarterAdapter(this, projectList);
+    private void showResponse(Cursor cursor) {
+        kickStarterAdapter = new KickStarterAdapter(this, cursor);
         recyclerView.setAdapter(kickStarterAdapter);
         kickStarterAdapter.setItemClickListener(this);
         progressBar.setVisibility(View.GONE);
@@ -175,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -185,5 +196,32 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
         Intent intent = new Intent(this, DetailedActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        Uri projects_uri = KickContract.KickEntry.CONTENT_URI;
+
+        return new CursorLoader(this,
+                projects_uri,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        if (cursor != null && cursor.getCount() > 0) {
+            kickStarterAdapter.swapCursor(cursor);
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        kickStarterAdapter.swapCursor(null);
     }
 }
