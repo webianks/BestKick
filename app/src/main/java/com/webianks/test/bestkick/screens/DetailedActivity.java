@@ -1,9 +1,12 @@
 package com.webianks.test.bestkick.screens;
 
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -32,8 +35,8 @@ public class DetailedActivity extends AppCompatActivity implements LoaderManager
     private TextView countryTV;
     private TextView locationTV;
     private TextView percentageFundedTV;
-    private Button moreButton;
     int sl_number;
+    private String url;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,8 +64,6 @@ public class DetailedActivity extends AppCompatActivity implements LoaderManager
         countryTV = (TextView) findViewById(R.id.countryValue);
         locationTV = (TextView) findViewById(R.id.locationValue);
         percentageFundedTV = (TextView) findViewById(R.id.fundedValue);
-        moreButton = (Button) findViewById(R.id.moreButton);
-
         sl_number = getIntent().getIntExtra("sl_number", 0);
 
     }
@@ -94,6 +95,11 @@ public class DetailedActivity extends AppCompatActivity implements LoaderManager
 
     public void readMore(View view) {
 
+        String urlFinal = "https://www.kickstarter.com".concat(url);
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(this, Uri.parse(urlFinal));
     }
 
     @Override
@@ -135,11 +141,11 @@ public class DetailedActivity extends AppCompatActivity implements LoaderManager
             String location = data.getString(location_index);
             String state = data.getString(state_index);
             String type = data.getString(type_index);
-            String url = data.getString(url_index);
+            url = data.getString(url_index);
             int percentageFunded = data.getInt(percentage_funded_index);
 
             titleTV.setText(title);
-            byTV.setText("By- "+by);
+            byTV.setText("By- " + by);
             blurbTV.setText(blurb);
             backersTV.setText(backers);
             pledgedTV.setText(String.valueOf(pledged));

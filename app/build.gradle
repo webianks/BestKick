@@ -34,4 +34,5 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
     compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
+    compile 'com.android.support:customtabs:25.3.1'
 }
