@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity implements
         Bundle args = new Bundle();
         args.putInt("start", 0);
         args.putInt("end", 19);
-        args.putBoolean("filter",false);
+        args.putBoolean("filter", false);
+        args.putBoolean("sort", false);
 
         getSupportLoaderManager().initLoader(BEST_KICK_PROJECTS_LOADER, args, this);
     }
@@ -258,35 +259,40 @@ public class MainActivity extends AppCompatActivity implements
         int start = args.getInt("start");
         int end = args.getInt("end");
 
-        boolean filter  = args.getBoolean("filter");
+        boolean filter = args.getBoolean("filter");
+        boolean sort = args.getBoolean("sort");
 
         loading = true;
 
         Uri projects_uri = KickContract.KickEntry.CONTENT_URI;
         String selection;
         String[] selectionArgs;
+        String sort_order = null;
 
-        if (filter){
-
+        if (filter) {
             String backers = args.getString("filter_by");
-            Toast.makeText(this,"Filtering by "+backers,Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Filtering by " + backers, Toast.LENGTH_SHORT).show();
 
             selection = KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " >= ? AND " +
-                    KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ? AND "+
+                    KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ? AND " +
                     KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_BACKERS + " <= ? ";
-            selectionArgs = new String[]{String.valueOf(start), String.valueOf(end),backers};
-        }else{
+            selectionArgs = new String[]{String.valueOf(start), String.valueOf(end), backers};
+        }
+        else {
             selection = KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " >= ? AND " +
                     KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ?";
             selectionArgs = new String[]{String.valueOf(start), String.valueOf(end)};
         }
+
+        if (sort)
+            sort_order = args.getString("sort_by");
 
         return new CursorLoader(this,
                 projects_uri,
                 null,
                 selection,
                 selectionArgs,
-                null);
+                sort_order);
     }
 
     @Override
@@ -299,11 +305,42 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case R.id.ic_sort:
-
+                sort();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sort() {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+        alertDialog.setTitle("Sort Projects");
+        alertDialog.setMessage("Sort Alphabetically?");
+
+        alertDialog.setPositiveButton("Sort",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Bundle args = new Bundle();
+                        args.putInt("start", 0);
+                        args.putInt("end", kickStarterAdapter.getItemCount() - 1);
+                        args.putBoolean("sort", true);
+                        args.putBoolean("filter", false);
+                        args.putString("sort_by", "title");
+                        getSupportLoaderManager().restartLoader(BEST_KICK_PROJECTS_LOADER, args, MainActivity.this);
+
+                    }
+                });
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
+
     }
 
     private void filter() {
@@ -316,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.setMargins(50,00,50,00);
+        lp.setMargins(50, 00, 50, 00);
         input.setLayoutParams(lp);
         input.setGravity(Gravity.CENTER);
         input.setHint(getString(R.string.enter_backers));
@@ -332,9 +369,9 @@ public class MainActivity extends AppCompatActivity implements
                         if (!backers.equals("")) {
                             Bundle args = new Bundle();
                             args.putInt("start", 0);
-                            args.putInt("end", kickStarterAdapter.getItemCount()-1);
-                            args.putBoolean("filter",true);
-                            args.putString("filter_by",backers);
+                            args.putInt("end", kickStarterAdapter.getItemCount() - 1);
+                            args.putBoolean("filter", true);
+                            args.putString("filter_by", backers);
                             getSupportLoaderManager().restartLoader(BEST_KICK_PROJECTS_LOADER, args, MainActivity.this);
 
                         }
@@ -360,10 +397,9 @@ public class MainActivity extends AppCompatActivity implements
         if (cursor != null && cursor.getCount() > 0) {
             kickStarterAdapter.swapCursor(cursor);
             progressBar.setVisibility(View.GONE);
-        }else{
+        } else {
             kickStarterAdapter.swapCursor(null);
         }
-
 
     }
 
