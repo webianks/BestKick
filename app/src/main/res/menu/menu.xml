@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/ic_sort"
+        android:icon="@drawable/ic_sort_white_24dp"
+        android:title="@string/sort"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/ic_filter"
+        android:icon="@drawable/ic_filter_list_white_24dp"
+        android:title="@string/filter"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/ic_portfolio"
+        android:title="@string/portfolio"
+        app:showAsAction="never" />
+
+</menu>

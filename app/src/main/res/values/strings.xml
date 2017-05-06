@@ -15,4 +15,8 @@
     <string name="percentage_funded">Percentage Funded: </string>
     <string name="noOfDaysToGoLabel">No. Of Days To Go: </string>
     <string name="read_more">+ Read More</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Always</string>
+    <string name="sync_account_type">com.webianks.test.bestkick</string>
 </resources>

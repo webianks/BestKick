@@ -1,11 +1,13 @@
 package com.webianks.test.bestkick;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -14,6 +16,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.webianks.test.bestkick.database.KickContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity implements KickStarterAdapter.ItemClickListener {
 
@@ -63,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
     private void processResponse(JSONArray response) {
 
         List<KickProject> projectList = new ArrayList<>();
+        Vector<ContentValues> cVVector = new Vector<ContentValues>(response.length());
 
         for (int i = 0; i < response.length(); i++) {
 
@@ -106,11 +111,39 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
 
                 projectList.add(kickProject);
 
+                ContentValues kickValues = new ContentValues();
+
+                kickValues.put(KickContract.KickEntry.KICK_SL_NUMBER, serialNumber);
+                kickValues.put(KickContract.KickEntry.KICK_AMT_PLEDGED, pledged);
+                kickValues.put(KickContract.KickEntry.KICK_BLURB, blurb);
+                kickValues.put(KickContract.KickEntry.KICK_BY, by);
+                kickValues.put(KickContract.KickEntry.KICK_COUNTRY, country);
+                kickValues.put(KickContract.KickEntry.KICK_CURRENCY, currency);
+                kickValues.put(KickContract.KickEntry.KICK_END_TIME, endTime);
+                kickValues.put(KickContract.KickEntry.KICK_LOCATION, location);
+                kickValues.put(KickContract.KickEntry.KICK_PERCENTAGE_FUNDED, percentageFunded);
+                kickValues.put(KickContract.KickEntry.KICK_BACKERS, backers);
+                kickValues.put(KickContract.KickEntry.KICK_STATE, state);
+                kickValues.put(KickContract.KickEntry.KICK_TITLE, title);
+                kickValues.put(KickContract.KickEntry.KICK_TYPE, type);
+                kickValues.put(KickContract.KickEntry.KICK_URL, url);
+
+                cVVector.add(kickValues);
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
+        }
+
+        int inserted = 0;
+        // add to database
+        if (cVVector.size() > 0) {
+            ContentValues[] cvArray = new ContentValues[cVVector.size()];
+            cVVector.toArray(cvArray);
+            getContentResolver().delete(KickContract.KickEntry.CONTENT_URI, null, null);
+            getContentResolver().bulkInsert(KickContract.KickEntry.CONTENT_URI, cvArray);
         }
 
         showResponse(projectList);
@@ -138,6 +171,12 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

@@ -24,6 +24,12 @@
             android:label="@string/details"
             android:name=".DetailedActivity"/>
 
+        <provider
+            android:name=".database.KickProvider"
+            android:authorities="com.webianks.test.bestkick"
+            android:exported="false"
+            android:syncable="true" />
+
     </application>
 
 </manifest>
