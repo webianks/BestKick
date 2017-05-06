@@ -27,8 +27,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity implements KickStarterAdapter.ItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -101,25 +99,6 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
                 int percentageFunded = jsonProject.getInt("percentage.funded");
                 int serialNumber = jsonProject.getInt("s.no");
 
-               /* KickProject kickProject = new KickProject();
-
-                kickProject.setTitle(title);
-                kickProject.setBackers(backers);
-                kickProject.setEnd_time(endTime);
-                kickProject.setPledge(String.valueOf(pledged));
-
-                kickProject.setBlurb(blurb);
-                kickProject.setBy(by);
-                kickProject.setCountry(country);
-                kickProject.setCurrency(currency);
-                kickProject.setLocation(location);
-                kickProject.setState(state);
-                kickProject.setType(type);
-                kickProject.setUrl(url);
-                kickProject.setPercentageFunded(percentageFunded);
-                kickProject.setSerialNumber(serialNumber);
-
-                projectList.add(kickProject);*/
 
                 ContentValues kickValues = new ContentValues();
 
@@ -191,9 +170,13 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
     }
 
     @Override
-    public void itemClicked() {
+    public void itemClicked(Cursor dataCursor) {
+
+        int serial_number_index = dataCursor.getColumnIndex(KickContract.KickEntry.KICK_SL_NUMBER);
+        int serial_number = dataCursor.getInt(serial_number_index);
 
         Intent intent = new Intent(this, DetailedActivity.class);
+        intent.putExtra("sl_number",serial_number);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

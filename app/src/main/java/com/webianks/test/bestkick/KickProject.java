@@ -1,10 +1,13 @@
 package com.webianks.test.bestkick;
 
+
+import java.io.Serializable;
+
 /**
  * Created by R Ankit on 06-05-2017.
  */
 
-class KickProject {
+class KickProject{
 
 
     private int serialNumber;

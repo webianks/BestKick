@@ -44,6 +44,10 @@ public class KickContract {
         public static String getDetailById(Uri uri) {
             return uri.getPathSegments().get(1);
         }
+
+        public static Uri buildProjectWithSerial(int sl_number) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(sl_number)).build();
+        }
     }
 
 }

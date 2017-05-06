@@ -100,8 +100,10 @@ public class KickStarterAdapter extends RecyclerView.Adapter<KickStarterAdapter.
                 @Override
                 public void onClick(View view) {
 
+                    dataCursor.moveToPosition(getAdapterPosition());
+
                     if (itemClickListener!=null)
-                        itemClickListener.itemClicked();
+                        itemClickListener.itemClicked(dataCursor);
                 }
             });
 
@@ -109,7 +111,7 @@ public class KickStarterAdapter extends RecyclerView.Adapter<KickStarterAdapter.
     }
 
     interface ItemClickListener{
-        public void itemClicked();
+        void itemClicked(Cursor dataCursor);
     }
 
 }
