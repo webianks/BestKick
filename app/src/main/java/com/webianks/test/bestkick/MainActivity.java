@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -31,11 +32,13 @@ import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity implements KickStarterAdapter.ItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
-
     private static final int BEST_KICK_PROJECTS_LOADER = 200;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private KickStarterAdapter kickStarterAdapter;
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,12 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
         getProjects();
         showResponse(null);
 
-        getSupportLoaderManager().initLoader(BEST_KICK_PROJECTS_LOADER, null, this);
+        //for first 20 items
+        Bundle args = new Bundle();
+        args.putInt("start", 0);
+        args.putInt("end", 19);
+
+        getSupportLoaderManager().initLoader(BEST_KICK_PROJECTS_LOADER, args, this);
     }
 
     private void getProjects() {
@@ -158,9 +166,35 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
             getSupportActionBar().setTitle(null);
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
+                {
+                    visibleItemCount = linearLayoutManager.getChildCount();
+                    totalItemCount = linearLayoutManager.getItemCount();
+                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            loading = false;
+                            Log.v("...", "Last Item Wow !" + totalItemCount);
+
+                            //restart loader to fetch more values
+                            //for first 20 items
+                            Bundle args = new Bundle();
+                            args.putInt("start", 0);
+                            args.putInt("end", totalItemCount + 19);
+                            getSupportLoaderManager().restartLoader(BEST_KICK_PROJECTS_LOADER, args, MainActivity.this);
+
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -176,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
         int serial_number = dataCursor.getInt(serial_number_index);
 
         Intent intent = new Intent(this, DetailedActivity.class);
-        intent.putExtra("sl_number",serial_number);
+        intent.putExtra("sl_number", serial_number);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
@@ -184,13 +218,22 @@ public class MainActivity extends AppCompatActivity implements KickStarterAdapte
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+        int start = args.getInt("start");
+        int end = args.getInt("end");
+
+        loading = true;
+
         Uri projects_uri = KickContract.KickEntry.CONTENT_URI;
+        String selection = KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " >= ? AND " +
+                KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ?";
+
+        String[] selectionArgs = new String[]{String.valueOf(start), String.valueOf(end)};
 
         return new CursorLoader(this,
                 projects_uri,
                 null,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null);
     }
 

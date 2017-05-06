@@ -138,7 +138,7 @@ public class DetailedActivity extends AppCompatActivity implements LoaderManager
             int percentageFunded = data.getInt(percentage_funded_index);
 
             titleTV.setText(title);
-            byTV.setText(by);
+            byTV.setText("By- "+by);
             blurbTV.setText(blurb);
             backersTV.setText(backers);
             pledgedTV.setText(String.valueOf(pledged));
