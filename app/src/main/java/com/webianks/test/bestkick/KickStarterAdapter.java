@@ -38,9 +38,9 @@ public class KickStarterAdapter extends RecyclerView.Adapter<KickStarterAdapter.
     public void onBindViewHolder(VH holder, int position) {
 
         holder.tvProjectName.setText(projectsList.get(position).getTitle());
-        holder.tvPleadge.setText(projectsList.get(position).getPledge());
-        holder.tvBackers.setText(projectsList.get(position).getBackers());
-        holder.tvNoOfDaysTOGo.setText(projectsList.get(position).getNoOfDaysToGo());
+        holder.tvPleadge.setText(context.getString(R.string.pledged_amount)+projectsList.get(position).getPledge());
+        holder.tvBackers.setText(context.getString(R.string.backers_label)+projectsList.get(position).getBackers());
+        holder.tvNoOfDaysTOGo.setText(context.getString(R.string.noOfDaysToGoLabel)+projectsList.get(position).getNoOfDaysToGo());
 
     }
 

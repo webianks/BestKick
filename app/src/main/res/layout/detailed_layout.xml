@@ -38,8 +38,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/title"
@@ -54,29 +53,193 @@
                 android:id="@+id/by"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="right"
                 android:paddingLeft="@dimen/all_content_padding"
                 android:paddingRight="@dimen/all_content_padding"
                 android:text="@string/by"
-                android:layout_gravity="right"
+                android:textSize="@dimen/normal_text_size"
                 android:textStyle="italic" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/grey"
                 android:layout_margin="@dimen/all_content_padding"
-                >
+                android:background="@color/grey">
+
                 <TextView
                     android:id="@+id/blurb"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/all_content_padding"
-                    android:background="@color/white"
                     android:layout_marginLeft="@dimen/blurb_margin"
-                    android:text="@string/blurb" />
+                    android:background="@color/white"
+                    android:padding="@dimen/all_content_padding"
+                    android:text="@string/blurb"
+                    android:textSize="@dimen/normal_text_size" />
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/about"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/all_content_padding"
+                android:text="@string/about"
+                android:textSize="@dimen/normal_text_size"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/backers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_supervisor_account"
+                    android:drawablePadding="@dimen/app_title_size"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/all_content_padding"
+                    android:paddingRight="@dimen/all_content_padding"
+                    android:text="@string/backers_label"
+                    android:textSize="@dimen/normal_text_size" />
+
+                <TextView
+                    android:id="@+id/backersValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/app_title_size"
+                    android:gravity="center_vertical"
+                    android:paddingRight="@dimen/all_content_padding"
+                    android:text="21254"
+                    android:textSize="@dimen/normal_text_size"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_monetization_on"
+                    android:drawablePadding="@dimen/app_title_size"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/all_content_padding"
+                    android:paddingRight="@dimen/all_content_padding"
+                    android:text="@string/pledged_amount"
+                    android:textSize="@dimen/normal_text_size" />
+
+                <TextView
+                    android:id="@+id/amountValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/app_title_size"
+                    android:gravity="center_vertical"
+                    android:paddingRight="@dimen/all_content_padding"
+                    android:text="15823"
+                    android:textSize="@dimen/normal_text_size"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_location_on"
+                    android:drawablePadding="@dimen/app_title_size"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/all_content_padding"
+                    android:paddingRight="@dimen/all_content_padding"
+                    android:text="@string/location_label"
+                    android:textSize="@dimen/normal_text_size" />
+
+                <TextView
+                    android:id="@+id/locationValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/app_title_size"
+                    android:gravity="center_vertical"
+                    android:paddingRight="@dimen/all_content_padding"
+                    android:text="Washington, DC"
+                    android:textSize="@dimen/normal_text_size"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_flag"
+                    android:drawablePadding="@dimen/app_title_size"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/all_content_padding"
+                    android:paddingRight="@dimen/all_content_padding"
+                    android:text="@string/country_label"
+                    android:textSize="@dimen/normal_text_size" />
+
+                <TextView
+                    android:id="@+id/countryValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/app_title_size"
+                    android:gravity="center_vertical"
+                    android:paddingRight="@dimen/all_content_padding"
+                    android:text="US"
+                    android:textSize="@dimen/normal_text_size"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/funded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_data_usage"
+                    android:drawablePadding="@dimen/app_title_size"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/all_content_padding"
+                    android:paddingRight="@dimen/all_content_padding"
+                    android:text="@string/percentage_funded"
+                    android:textSize="@dimen/normal_text_size" />
+
+
+                <TextView
+                    android:id="@+id/fundedValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/app_title_size"
+                    android:gravity="center_vertical"
+                    android:paddingRight="@dimen/all_content_padding"
+                    android:text="186"
+                    android:textSize="@dimen/normal_text_size"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

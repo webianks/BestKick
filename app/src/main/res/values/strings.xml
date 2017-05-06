@@ -7,4 +7,11 @@
     <string name="details">Details</string>
     <string name="by">By- Museum of Science Fiction</string>
     <string name="blurb"><![CDATA[\'Catalysts, Explorers & Secret Keepers: Women of Science Fiction\' is a take-home exhibit & anthology by the Museum of Science Fiction.]]></string>
+    <string name="about">About this project:</string>
+    <string name="backers_label">Backers: </string>
+    <string name="location_label">Location: </string>
+    <string name="country_label">Country: </string>
+    <string name="pledged_amount">Pledged Amount: </string>
+    <string name="percentage_funded">Percentage Funded: </string>
+    <string name="noOfDaysToGoLabel">No. Of Days To Go: </string>
 </resources>

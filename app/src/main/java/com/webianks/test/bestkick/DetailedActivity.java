@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 /**
  * Created by R Ankit on 06-05-2017.
@@ -12,12 +13,28 @@ import android.view.MenuItem;
 
 public class DetailedActivity extends AppCompatActivity {
 
+
+    private TextView titleTV;
+    private TextView byTV;
+    private TextView blurbTV;
+    private TextView backersTV;
+    private TextView pledgedTV;
+    private TextView countryTV;
+    private TextView locationTV;
+    private TextView percentageFunded;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detailed_layout);
 
         initView();
+        setValues();
+    }
+
+
+    private void setValues() {
+
     }
 
     private void initView() {
@@ -29,15 +46,25 @@ public class DetailedActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(null);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        titleTV = (TextView) findViewById(R.id.title);
+        byTV = (TextView) findViewById(R.id.by);
+        blurbTV = (TextView) findViewById(R.id.blurb);
+        backersTV = (TextView) findViewById(R.id.backersValue);
+        pledgedTV = (TextView) findViewById(R.id.amountValue);
+        countryTV = (TextView) findViewById(R.id.countryValue);
+        locationTV = (TextView) findViewById(R.id.locationValue);
+        percentageFunded = (TextView) findViewById(R.id.fundedValue);
+
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
-            overridePendingTransition(R.anim.second_in,R.anim.second_out);
+            overridePendingTransition(R.anim.second_in, R.anim.second_out);
         }
 
         return super.onOptionsItemSelected(item);
