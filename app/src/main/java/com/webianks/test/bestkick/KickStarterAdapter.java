@@ -1,10 +1,12 @@
 package com.webianks.test.bestkick;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public class KickStarterAdapter extends RecyclerView.Adapter<KickStarterAdapter.
 
     private Context context;
     private List<KickProject> projectsList;
+    private ItemClickListener itemClickListener;
 
     public KickStarterAdapter(Context context, List<KickProject> projectsList) {
         this.context = context;
@@ -35,10 +38,15 @@ public class KickStarterAdapter extends RecyclerView.Adapter<KickStarterAdapter.
     public void onBindViewHolder(VH holder, int position) {
 
         holder.tvProjectName.setText(projectsList.get(position).getTitle());
-        holder.tvPleadge.setText(projectsList.get(position).getPleadge());
+        holder.tvPleadge.setText(projectsList.get(position).getPledge());
         holder.tvBackers.setText(projectsList.get(position).getBackers());
         holder.tvNoOfDaysTOGo.setText(projectsList.get(position).getNoOfDaysToGo());
 
+    }
+
+
+    public void setItemClickListener(ItemClickListener itemClickListener){
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
@@ -52,6 +60,7 @@ public class KickStarterAdapter extends RecyclerView.Adapter<KickStarterAdapter.
         TextView tvPleadge;
         TextView tvBackers;
         TextView tvNoOfDaysTOGo;
+        FrameLayout mainLayout;
 
         VH(View itemView) {
             super(itemView);
@@ -60,7 +69,22 @@ public class KickStarterAdapter extends RecyclerView.Adapter<KickStarterAdapter.
             tvPleadge = (TextView) itemView.findViewById(R.id.pleadge);
             tvBackers = (TextView) itemView.findViewById(R.id.backers);
             tvNoOfDaysTOGo = (TextView) itemView.findViewById(R.id.noOfDaysToGo);
+            mainLayout = (FrameLayout) itemView.findViewById(R.id.main_layout);
+
+            mainLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (itemClickListener!=null)
+                        itemClickListener.itemClicked();
+                }
+            });
 
         }
     }
+
+    interface ItemClickListener{
+        public void itemClicked();
+    }
+
 }
