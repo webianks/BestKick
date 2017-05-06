@@ -32,6 +32,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.webianks.test.bestkick.KickStarterAdapter;
 import com.webianks.test.bestkick.R;
 import com.webianks.test.bestkick.VolleySingleton;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private LinearLayoutManager linearLayoutManager;
     private SmoothProgressBar smoothProgressBar;
+    MaterialSearchView materialSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements
         args.putInt("end", 19);
         args.putBoolean("filter", false);
         args.putBoolean("sort", false);
+        args.putBoolean("search", false);
 
         getSupportLoaderManager().initLoader(BEST_KICK_PROJECTS_LOADER, args, this);
     }
@@ -193,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements
 
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
         smoothProgressBar = (SmoothProgressBar) findViewById(R.id.smoothProgress);
+        materialSearchView = (MaterialSearchView) findViewById(R.id.search_view);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -233,6 +237,63 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
+
+
+        setSearchViewComponents();
+    }
+
+    private void setSearchViewComponents() {
+
+        materialSearchView.setVoiceSearch(true);
+        materialSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //Do some magic
+                getSearchedResult(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                //getSearchedResult(newText);
+                return true;
+
+            }
+        });
+
+        materialSearchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                //Do some magic
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                //Do some magic
+                Bundle args = new Bundle();
+                args.putInt("start", 0);
+                args.putInt("end", kickStarterAdapter.getItemCount() - 1);
+                args.putBoolean("sort", false);
+                args.putBoolean("filter", false);
+                args.putBoolean("search", false);
+                getSupportLoaderManager().restartLoader(BEST_KICK_PROJECTS_LOADER, args, MainActivity.this);
+            }
+        });
+    }
+
+    private void getSearchedResult(String query) {
+
+        materialSearchView.hideKeyboard(recyclerView);
+
+        Bundle args = new Bundle();
+        args.putInt("start", 0);
+        args.putInt("end", kickStarterAdapter.getItemCount() - 1);
+        args.putBoolean("sort", false);
+        args.putBoolean("filter", false);
+        args.putBoolean("search", true);
+        args.putString("search_key", query);
+        getSupportLoaderManager().restartLoader(BEST_KICK_PROJECTS_LOADER, args, MainActivity.this);
     }
 
     @Override
@@ -261,6 +322,7 @@ public class MainActivity extends AppCompatActivity implements
 
         boolean filter = args.getBoolean("filter");
         boolean sort = args.getBoolean("sort");
+        boolean search = args.getBoolean("search");
 
         loading = true;
 
@@ -277,8 +339,13 @@ public class MainActivity extends AppCompatActivity implements
                     KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ? AND " +
                     KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_BACKERS + " <= ? ";
             selectionArgs = new String[]{String.valueOf(start), String.valueOf(end), backers};
-        }
-        else {
+        } else if (search) {
+            selection = KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " >= ? AND " +
+                    KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ? AND " +
+                    KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_TITLE + " LIKE ? ";
+
+            selectionArgs = new String[]{String.valueOf(start), String.valueOf(end), "%" + args.getString("search_key") + "%"};
+        } else {
             selection = KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " >= ? AND " +
                     KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ?";
             selectionArgs = new String[]{String.valueOf(start), String.valueOf(end)};
@@ -286,6 +353,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (sort)
             sort_order = args.getString("sort_by");
+
 
         return new CursorLoader(this,
                 projects_uri,
@@ -306,6 +374,10 @@ public class MainActivity extends AppCompatActivity implements
 
             case R.id.ic_sort:
                 sort();
+                break;
+
+            case R.id.ic_search:
+                materialSearchView.showSearch();
                 break;
         }
 

@@ -20,4 +20,5 @@
     <string name="sort">Always</string>
     <string name="sync_account_type">com.webianks.test.bestkick</string>
     <string name="enter_backers">Enter Backers</string>
+    <string name="search">Search</string>
 </resources>

@@ -16,6 +16,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/ic_search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/search"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/ic_portfolio"
         android:title="@string/portfolio"
         app:showAsAction="never" />
