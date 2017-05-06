@@ -268,13 +268,13 @@ public class MainActivity extends AppCompatActivity implements
 
         if (filter){
 
-            String backers = String.valueOf(args.getInt("filter_by"));
+            String backers = args.getString("filter_by");
             Toast.makeText(this,"Filtering by "+backers,Toast.LENGTH_SHORT).show();
 
             selection = KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " >= ? AND " +
                     KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ? AND "+
                     KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_BACKERS + " <= ? ";
-            selectionArgs = new String[]{String.valueOf(start), String.valueOf(end), backers};
+            selectionArgs = new String[]{String.valueOf(start), String.valueOf(end),backers};
         }else{
             selection = KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " >= ? AND " +
                     KickContract.KickEntry.TABLE_NAME + "." + KickContract.KickEntry.KICK_SL_NUMBER + " <= ?";
@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements
                             args.putInt("start", 0);
                             args.putInt("end", kickStarterAdapter.getItemCount()-1);
                             args.putBoolean("filter",true);
-                            args.putInt("filter_by",Integer.valueOf(backers));
+                            args.putString("filter_by",backers);
                             getSupportLoaderManager().restartLoader(BEST_KICK_PROJECTS_LOADER, args, MainActivity.this);
 
                         }
@@ -360,7 +360,11 @@ public class MainActivity extends AppCompatActivity implements
         if (cursor != null && cursor.getCount() > 0) {
             kickStarterAdapter.swapCursor(cursor);
             progressBar.setVisibility(View.GONE);
+        }else{
+            kickStarterAdapter.swapCursor(null);
         }
+
+
     }
 
     @Override
