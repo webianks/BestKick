@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -22,6 +24,7 @@ public class DetailedActivity extends AppCompatActivity {
     private TextView countryTV;
     private TextView locationTV;
     private TextView percentageFunded;
+    private Button moreButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +58,7 @@ public class DetailedActivity extends AppCompatActivity {
         countryTV = (TextView) findViewById(R.id.countryValue);
         locationTV = (TextView) findViewById(R.id.locationValue);
         percentageFunded = (TextView) findViewById(R.id.fundedValue);
+        moreButton = (Button) findViewById(R.id.moreButton);
 
     }
 
@@ -74,5 +78,10 @@ public class DetailedActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.second_in, R.anim.second_out);
+    }
+
+
+    public void readMore(View view) {
+
     }
 }

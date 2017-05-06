@@ -241,6 +241,17 @@
 
             </LinearLayout>
 
+            <Button
+                android:id="@+id/moreButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/all_content_padding"
+                android:text="@string/read_more"
+                android:theme="@style/ButtonTheme"
+                android:textStyle="bold"
+                android:onClick="readMore"
+                />
+
         </LinearLayout>
 
 

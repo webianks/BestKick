@@ -14,4 +14,5 @@
     <string name="pledged_amount">Pledged Amount: </string>
     <string name="percentage_funded">Percentage Funded: </string>
     <string name="noOfDaysToGoLabel">No. Of Days To Go: </string>
+    <string name="read_more">+ Read More</string>
 </resources>
